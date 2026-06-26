@@ -6,19 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Worduel - Global Sync</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&display=swap');
 
         * {
             box-sizing: border-box;
             margin: 0;
-            padding: 0
+            padding: 0;
+            user-select: none;
         }
 
         body {
             font-family: 'Space Grotesk', sans-serif;
-            background: #0f0f1a;
+            background: radial-gradient(circle at top, #3b2164, #0a0514);
             color: #f0f0ff;
-            min-height: 100vh
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .screen {
@@ -31,127 +33,147 @@
         }
 
         .screen.active {
-            display: flex
+            display: flex;
+            animation: bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
+        /* Gamified Logo */
         .game-logo {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 3px;
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            margin-bottom: 4px;
-            background: linear-gradient(135deg, #a78bfa, #60a5fa, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent
+            color: #fff;
+            -webkit-text-stroke: 2px #4a148c;
+            text-shadow: 0 6px 0 #4a148c;
+            transform: rotate(-2deg);
+            margin-bottom: 0.5rem;
         }
 
         .game-tagline {
-            font-size: 13px;
-            color: #6b7280;
-            letter-spacing: 1px;
+            font-size: 14px;
+            color: #a78bfa;
+            font-weight: 700;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 2rem
+            margin-bottom: 2rem;
+            background: #2a1452;
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 2px solid #4a148c;
         }
 
+        /* 3D Game Card */
         .gcard {
-            background: #1a1a2e;
-            border: 1px solid #2d2d4e;
-            border-radius: 20px;
+            background: #1e1533;
+            border: 4px solid #35215c;
+            border-radius: 24px;
+            box-shadow: 0 10px 0 #0d0717;
             padding: 1.5rem;
             width: 100%;
             max-width: 460px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin-bottom: 10px;
         }
 
+        /* Player Badges */
         .player-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 4px 12px;
+            padding: 6px 16px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
-            margin-bottom: 1rem
+            margin-bottom: 1rem;
+            border-bottom: 3px solid rgba(0, 0, 0, 0.3);
         }
 
         .p1-badge {
-            background: #2d1f4e;
-            color: #a78bfa;
-            border: 1px solid #4c3a7a
+            background: #7c3aed;
+            color: #fff;
         }
 
         .p2-badge {
-            background: #1a3040;
-            color: #60a5fa;
-            border: 1px solid #2a5070
+            background: #2563eb;
+            color: #fff;
         }
 
         .error {
             color: #f87171;
-            font-size: 12px;
-            min-height: 16px;
+            font-size: 13px;
+            font-weight: 700;
+            min-height: 18px;
             margin-top: 6px;
             text-align: center;
             width: 100%
         }
 
+        /* Gamified 3D CTA Buttons */
         .cta {
             width: 100%;
             padding: 14px;
-            border-radius: 12px;
-            border: none;
-            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            border-radius: 16px;
+            border: 3px solid #166534;
+            background: #22c55e;
             color: #fff;
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 1px;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 2px;
             cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s;
+            transition: all 0.1s;
             font-family: 'Space Grotesk', sans-serif;
-            margin-top: 1rem
+            margin-top: 1rem;
+            box-shadow: 0 6px 0 #14532d;
+            text-transform: uppercase;
         }
 
         .cta:hover {
-            opacity: 0.9
+            filter: brightness(1.1);
         }
 
         .cta:active {
-            transform: scale(0.98)
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #14532d;
         }
 
-        /* Ghost button for resetting/aborting */
+        /* Ghost Button (Abort/Reset) */
         .ghost-btn {
-            background: transparent;
-            border: 1px solid #4b5563;
-            color: #9ca3af;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
+            background: #2a1a4a;
+            border: 3px solid #4a2b7a;
+            color: #a78bfa;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
             font-family: 'Space Grotesk', sans-serif;
-            transition: all 0.2s;
+            transition: all 0.1s;
             margin-top: 1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             width: 100%;
-            text-align: center
+            text-align: center;
+            box-shadow: 0 4px 0 #1a0f2e;
         }
 
         .ghost-btn:hover {
-            color: #f87171;
-            border-color: #f87171;
-            background: rgba(248, 113, 113, 0.1)
+            background: #35215c;
         }
 
-        /* count picker */
+        .ghost-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #1a0f2e;
+        }
+
+        /* Count Picker Grid */
         .count-grid {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: center;
             flex-wrap: wrap;
             margin: 1rem 0;
@@ -159,30 +181,33 @@
         }
 
         .count-btn {
-            width: 52px;
-            height: 52px;
-            border-radius: 12px;
-            background: #0f0f1a;
-            border: 2px solid #2d2d4e;
-            color: #6b7280;
-            font-size: 20px;
-            font-weight: 700;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: #2a1a4a;
+            border: 3px solid #4a2b7a;
+            color: #a78bfa;
+            font-size: 24px;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.15s;
-            font-family: 'Space Grotesk', sans-serif
+            transition: all 0.1s;
+            font-family: 'Space Grotesk', sans-serif;
+            box-shadow: 0 5px 0 #1a0f2e;
         }
 
         .count-btn:hover {
-            border-color: #a78bfa;
-            color: #a78bfa
+            filter: brightness(1.2);
         }
 
         .count-btn.selected {
-            background: #2d1f4e;
-            border-color: #a78bfa;
-            color: #a78bfa
+            background: #a78bfa;
+            border-color: #5b21b6;
+            color: #fff;
+            transform: translateY(5px);
+            box-shadow: 0 0 0 #1a0f2e;
         }
 
+        /* Preview Dashes */
         .preview-dashes {
             display: flex;
             gap: 8px;
@@ -196,36 +221,25 @@
             width: 40px;
             height: 48px;
             border-radius: 10px;
-            background: #0f0f1a;
-            border: 2px solid #4c3a7a;
+            background: #150a24;
+            border: 3px dashed #4a2b7a;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 22px;
-            color: #4c3a7a;
-            font-weight: 700;
-            animation: fadeIn 0.2s
+            color: #a78bfa;
+            font-weight: 800;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8)
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1)
-            }
-        }
-
+        /* Hint Box */
         .hint-box {
-            background: #0f0f1a;
-            border: 1px solid #2d2d4e;
-            border-radius: 12px;
+            background: #150a24;
+            border: 2px solid #35215c;
+            border-radius: 16px;
             padding: 12px 16px;
-            font-size: 13px;
-            color: #6b7280;
+            font-size: 14px;
+            font-weight: 700;
+            color: #9ca3af;
             text-align: center;
             margin: 0.75rem 0;
             line-height: 1.6;
@@ -233,58 +247,61 @@
         }
 
         .hint-box strong {
-            color: #a78bfa
+            color: #a78bfa;
+            font-size: 16px;
         }
 
-        /* guess grid */
+        /* 3D Guess Grid & Tiles */
         .guess-grid {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             margin-bottom: 1rem;
             width: 100%
         }
 
         .guess-row-el {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             justify-content: center
         }
 
         .tile {
-            width: 46px;
-            height: 50px;
-            border-radius: 10px;
+            width: 50px;
+            height: 56px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 19px;
-            font-weight: 700;
+            font-size: 24px;
+            font-weight: 800;
             text-transform: uppercase;
-            border: 2px solid #2d2d4e;
-            background: #0f0f1a;
-            color: #6b7280;
-            transition: all 0.25s
+            border: 3px solid #35215c;
+            border-bottom-width: 6px;
+            background: #150a24;
+            color: #9ca3af;
+            transition: all 0.2s
         }
 
         .tile.green {
-            background: #14532d;
-            border-color: #22c55e;
-            color: #4ade80
+            background: #22c55e;
+            border-color: #14532d;
+            color: #fff;
         }
 
         .tile.yellow {
-            background: #422006;
-            border-color: #f59e0b;
-            color: #fbbf24
+            background: #f59e0b;
+            border-color: #92400e;
+            color: #fff;
         }
 
         .tile.gray {
-            background: #1f2937;
-            border-color: #374151;
-            color: #6b7280
+            background: #4b5563;
+            border-color: #1f2937;
+            color: #d1d5db;
         }
 
+        /* Current Guess Word Display */
         .current-word {
             display: flex;
             gap: 8px;
@@ -295,25 +312,28 @@
         }
 
         .current-tile {
-            width: 46px;
-            height: 54px;
-            border-radius: 10px;
-            background: #0f0f1a;
-            border: 2px solid #a78bfa;
+            width: 50px;
+            height: 60px;
+            border-radius: 12px;
+            background: #35215c;
+            border: 3px solid #7c3aed;
+            border-bottom-width: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 21px;
-            font-weight: 700;
-            color: #f0f0ff;
-            text-transform: uppercase
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
         }
 
         .current-tile.empty {
-            border-color: #2d2d4e;
-            color: #3d3d5e
+            background: #150a24;
+            border-color: #35215c;
+            color: #4a2b7a;
         }
 
+        /* Progress Bar */
         .attempts-bar {
             margin: 0.75rem 0;
             width: 100%
@@ -322,47 +342,47 @@
         .attempts-label {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
-            color: #6b7280;
-            margin-bottom: 6px
-        }
-
-        .attempts-label span {
+            font-size: 14px;
             color: #a78bfa;
-            font-weight: 600
+            font-weight: 800;
+            margin-bottom: 8px
         }
 
         .bar-track {
-            background: #1f1f35;
-            border-radius: 6px;
-            height: 8px;
-            overflow: hidden
+            background: #150a24;
+            border-radius: 10px;
+            height: 14px;
+            border: 2px solid #35215c;
+            overflow: hidden;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4);
         }
 
         .bar-fill {
             height: 100%;
             border-radius: 6px;
-            background: linear-gradient(90deg, #22c55e, #a78bfa);
-            transition: width 0.4s ease
+            background: linear-gradient(90deg, #22c55e, #34d399);
+            transition: width 0.4s ease;
         }
 
+        /* Input Area */
         .guess-input-row {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             margin-top: 0.75rem;
             width: 100%
         }
 
         .guess-field {
             flex: 1;
-            background: #0f0f1a;
-            border: 1px solid #2d2d4e;
-            border-radius: 12px;
+            background: #150a24;
+            border: 3px solid #4a2b7a;
+            border-radius: 16px;
             padding: 12px 16px;
-            font-size: 20px;
-            letter-spacing: 6px;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 4px;
             text-align: center;
-            color: #f0f0ff;
+            color: #fff;
             font-family: 'Space Grotesk', sans-serif;
             text-transform: uppercase;
             outline: none;
@@ -370,140 +390,100 @@
         }
 
         .guess-field:focus {
-            border-color: #60a5fa
+            border-color: #7c3aed;
         }
 
         .go-btn {
-            padding: 12px 18px;
-            border-radius: 12px;
-            border: none;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            padding: 0 24px;
+            border-radius: 16px;
+            border: 3px solid #1d4ed8;
+            background: #2563eb;
             color: #fff;
-            font-size: 18px;
+            font-size: 24px;
+            font-weight: 800;
             cursor: pointer;
-            font-family: 'Space Grotesk', sans-serif
+            box-shadow: 0 5px 0 #1e3a8a;
+            transition: all 0.1s;
         }
 
         .go-btn:active {
-            transform: scale(0.96)
+            transform: translateY(5px);
+            box-shadow: 0 0 0 #1e3a8a;
         }
 
-        .legend {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 0.75rem;
-            flex-wrap: wrap;
-            width: 100%
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 11px;
-            color: #6b7280
-        }
-
-        .ldot {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px
-        }
-
-        .ldot.green {
-            background: #22c55e
-        }
-
-        .ldot.yellow {
-            background: #f59e0b
-        }
-
-        .ldot.gray {
-            background: #374151
-        }
-
+        /* Keyboard */
         .keyboard {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             margin-top: 1rem;
             width: 100%
         }
 
         .kb-row {
             display: flex;
-            gap: 5px;
+            gap: 6px;
             justify-content: center
         }
 
         .key {
-            min-width: 30px;
-            height: 36px;
-            border-radius: 7px;
-            background: #1f1f35;
-            border: none;
-            color: #9ca3af;
-            font-size: 12px;
-            font-weight: 700;
+            min-width: 32px;
+            height: 44px;
+            border-radius: 8px;
+            background: #2a1a4a;
+            border: 2px solid #4a2b7a;
+            border-bottom-width: 4px;
+            color: #e5e7eb;
+            font-size: 14px;
+            font-weight: 800;
             font-family: 'Space Grotesk', sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 6px;
-            transition: background 0.3s, color 0.3s
+            padding: 0 8px;
+            transition: all 0.1s;
+            cursor: pointer;
         }
 
         .key.green {
-            background: #14532d;
-            color: #4ade80
+            background: #22c55e;
+            border-color: #14532d;
+            color: #fff;
         }
 
         .key.yellow {
-            background: #422006;
-            color: #fbbf24
+            background: #f59e0b;
+            border-color: #92400e;
+            color: #fff;
         }
 
         .key.gray {
-            background: #1f2937;
-            color: #4b5563
+            background: #4b5563;
+            border-color: #1f2937;
+            color: #d1d5db;
         }
 
-        /* judge screen */
-        .judge-title {
-            font-size: 15px;
-            font-weight: 600;
-            text-align: center;
-            color: #6b7280;
+        .key:active {
+            transform: translateY(4px);
+            border-bottom-width: 0px;
             margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 1px
         }
 
+        /* Judge Tiles */
         .judge-word {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 8px;
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 10px;
             text-align: center;
             text-transform: uppercase;
-            color: #f0f0ff;
-            margin-bottom: 1.25rem
-        }
-
-        .judge-instruction {
-            font-size: 13px;
-            color: #6b7280;
-            text-align: center;
-            margin-bottom: 1rem
-        }
-
-        .judge-instruction strong {
-            color: #a78bfa
+            color: #fff;
+            margin-bottom: 1.25rem;
+            text-shadow: 0 4px 0 #4a2b7a;
         }
 
         .judge-tiles {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
             margin-bottom: 1.25rem;
@@ -511,148 +491,125 @@
         }
 
         .judge-tile {
-            width: 52px;
-            height: 60px;
-            border-radius: 12px;
+            width: 56px;
+            height: 68px;
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            font-weight: 700;
+            font-weight: 800;
             text-transform: uppercase;
-            border: 2px solid #2d2d4e;
-            background: #0f0f1a;
-            color: #f0f0ff;
+            border: 3px solid #4a2b7a;
+            border-bottom-width: 6px;
+            background: #150a24;
+            color: #fff;
             cursor: pointer;
-            transition: all 0.18s;
+            transition: all 0.1s;
             gap: 2px;
-            user-select: none
         }
 
         .judge-tile span.ltr {
-            font-size: 20px;
-            font-weight: 700
+            font-size: 26px;
         }
 
         .judge-tile span.ind {
-            font-size: 9px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            opacity: 0.8
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
         }
 
         .judge-tile.green {
-            background: #14532d;
-            border-color: #22c55e;
-            color: #4ade80
+            background: #22c55e;
+            border-color: #14532d;
         }
 
         .judge-tile.yellow {
-            background: #422006;
-            border-color: #f59e0b;
-            color: #fbbf24
+            background: #f59e0b;
+            border-color: #92400e;
         }
 
         .judge-tile.gray {
-            background: #1f2937;
-            border-color: #374151;
-            color: #9ca3af
+            background: #4b5563;
+            border-color: #1f2937;
         }
 
         .judge-tile:active {
-            transform: scale(0.93)
+            transform: translateY(6px);
+            border-bottom-width: 0px;
+            margin-bottom: 6px;
         }
 
-        .state-legend {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-            width: 100%
-        }
-
-        .sl {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-weight: 600
-        }
-
-        .sl.green {
-            background: #14532d;
-            color: #4ade80
-        }
-
-        .sl.yellow {
-            background: #422006;
-            color: #fbbf24
-        }
-
-        .sl.gray {
-            background: #1f2937;
-            color: #9ca3af
-        }
-
+        /* Judge Buttons */
         .judge-btns {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             margin-top: 0.5rem;
             width: 100%
         }
 
         .jbtn {
             flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            border: none;
-            font-size: 14px;
-            font-weight: 700;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 800;
             cursor: pointer;
             font-family: 'Space Grotesk', sans-serif;
-            transition: opacity 0.2s
+            transition: all 0.1s;
+            text-transform: uppercase;
         }
 
         .jbtn.win {
-            background: linear-gradient(135deg, #15803d, #22c55e);
-            color: #fff
+            background: #22c55e;
+            border: 3px solid #14532d;
+            color: #fff;
+            box-shadow: 0 6px 0 #14532d;
+        }
+
+        .jbtn.win:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #14532d;
         }
 
         .jbtn.next {
-            background: linear-gradient(135deg, #1e3a5f, #2563eb);
-            color: #fff
+            background: #2563eb;
+            border: 3px solid #1e3a8a;
+            color: #fff;
+            box-shadow: 0 6px 0 #1e3a8a;
         }
 
-        .jbtn:hover {
-            opacity: 0.9
+        .jbtn.next:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #1e3a8a;
         }
 
-        /* result */
+        /* Result Screen */
         .result-emoji {
-            font-size: 52px;
+            font-size: 64px;
             text-align: center;
-            margin-bottom: 0.5rem
+            margin-bottom: 0.5rem;
+            filter: drop-shadow(0 4px 0 rgba(0, 0, 0, 0.5));
         }
 
         .result-title {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 26px;
+            font-weight: 800;
             text-align: center;
-            margin-bottom: 4px
+            margin-bottom: 4px;
+            color: #fff;
         }
 
         .result-word-reveal {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 10px;
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: 8px;
             text-align: center;
             text-transform: uppercase;
             margin: 1rem 0;
-            color: #a78bfa
+            color: #34d399;
+            text-shadow: 0 4px 0 #064e3b;
         }
 
         .score-row {
@@ -664,54 +621,57 @@
         }
 
         .score-box {
-            background: #0f0f1a;
-            border: 1px solid #2d2d4e;
-            border-radius: 14px;
-            padding: 12px 24px;
+            background: #2a1a4a;
+            border: 3px solid #4a2b7a;
+            border-bottom-width: 6px;
+            border-radius: 20px;
+            padding: 16px 24px;
             text-align: center;
             flex: 1
         }
 
         .score-box .n {
-            font-size: 28px;
-            font-weight: 700
+            font-size: 36px;
+            font-weight: 800;
+            text-shadow: 0 3px 0 #000;
         }
 
         .score-box .l {
-            font-size: 11px;
-            color: #6b7280;
+            font-size: 12px;
+            color: #a78bfa;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px
+            letter-spacing: 1px;
+            margin-top: 4px;
         }
 
         .score-box.p2c .n {
-            color: #a78bfa
+            color: #60a5fa;
         }
 
         .score-box.p1c .n {
-            color: #60a5fa
+            color: #f87171;
         }
 
-        .play-again {
-            background: #1a1a2e;
-            border: 1px solid #4b5563;
-            border-radius: 12px;
-            padding: 12px 32px;
-            color: #f0f0ff;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Space Grotesk', sans-serif;
-            width: 100%
+        /* Animations */
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
-        .play-again:hover {
-            border-color: #a78bfa
-        }
-
-        /* animations */
         .pop {
-            animation: pop 0.15s
+            animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)
         }
 
         @keyframes pop {
@@ -720,7 +680,7 @@
             }
 
             50% {
-                transform: scale(1.18)
+                transform: scale(1.2)
             }
 
             100% {
@@ -756,31 +716,33 @@
             }
         }
 
+        /* Live Badge */
         .live-badge {
             position: fixed;
             top: 15px;
             right: 15px;
-            background: #14532d;
+            background: #166534;
             color: #4ade80;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
             letter-spacing: 1px;
-            border: 1px solid #22c55e;
+            border: 3px solid #14532d;
             display: flex;
             align-items: center;
-            gap: 6px;
-            transition: opacity 0.3s;
+            gap: 8px;
+            box-shadow: 0 4px 0 #064e3b;
             z-index: 100;
         }
 
         .live-dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             background: #4ade80;
             border-radius: 50%;
-            animation: pulse 1.5s infinite
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 8px #4ade80;
         }
 
         @keyframes pulse {
@@ -801,53 +763,45 @@
 
 <body>
 
-    <div class="live-badge" id="sync-status" style="background:#422006;color:#fbbf24;border-color:#f59e0b;">
-        <div class="live-dot" style="background:#fbbf24;"></div>CONNECTING...
+    <div class="live-badge" id="sync-status"
+        style="background:#92400e;color:#fbbf24;border-color:#78350f;box-shadow:0 4px 0 #451a03;">
+        <div class="live-dot" style="background:#fbbf24;box-shadow:0 0 8px #fbbf24;"></div>CONNECTING...
     </div>
 
+    <!-- S1: Setup -->
     <div id="s-setup" class="screen active">
         <div class="game-logo">Worduel</div>
-        <div class="game-tagline">Global Multiplayer</div>
+        <div class="game-tagline">Global Arcade</div>
         <div class="gcard">
-            <div class="player-badge p1-badge">⚔ Player 1 — Think of a word</div>
+            <div class="player-badge p1-badge">⚔ Player 1 — Set the Target</div>
             <div class="hint-box">Think of a secret word.<br>Just pick <strong>how many letters</strong> it has.</div>
-            <div style="font-size:12px;color:#6b7280;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Pick
-                the
-                letter count</div>
+            <div
+                style="font-size:13px;color:#a78bfa;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-top:8px">
+                Select Length</div>
             <div class="count-grid" id="count-grid"></div>
             <div class="preview-dashes" id="preview-dashes"></div>
             <div class="error" id="p1-error"></div>
-            <button class="cta" onclick="confirmCount()">Lock in & Play →</button>
+            <button class="cta" onclick="confirmCount()">LOCK IN & PLAY →</button>
             <button class="ghost-btn" onclick="resetGlobalScores()">Reset Global Scores</button>
         </div>
     </div>
 
+    <!-- S2: Guess -->
     <div id="s-guess" class="screen">
         <div class="game-logo">Worduel</div>
-        <div class="game-tagline">Global Multiplayer</div>
+        <div class="game-tagline">Global Arcade</div>
         <div class="gcard">
-            <div class="player-badge p2-badge">🔍 Everyone — Guess the word</div>
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="ldot green"></div>Right
-                </div>
-                <div class="legend-item">
-                    <div class="ldot yellow"></div>Wrong place
-                </div>
-                <div class="legend-item">
-                    <div class="ldot gray"></div>Not in word
-                </div>
-            </div>
+            <div class="player-badge p2-badge">🔍 Everyone — Break the Code</div>
             <div class="guess-grid" id="guess-grid"></div>
             <div class="current-word" id="current-word"></div>
             <div class="attempts-bar">
-                <div class="attempts-label"><span>Attempts</span><span id="att-text">8 left</span></div>
+                <div class="attempts-label"><span>ATTEMPTS LEFT</span><span id="att-text">8</span></div>
                 <div class="bar-track">
                     <div class="bar-fill" id="bar-fill" style="width:100%"></div>
                 </div>
             </div>
             <div class="guess-input-row">
-                <input type="text" id="guess-input" class="guess-field" placeholder="type guess..." autocomplete="off"
+                <input type="text" id="guess-input" class="guess-field" placeholder="GUESS..." autocomplete="off"
                     oninput="syncGuess()" onkeydown="if(event.key==='Enter')submitGuess()" />
                 <button class="go-btn" onclick="submitGuess()">→</button>
             </div>
@@ -857,52 +811,57 @@
         </div>
     </div>
 
+    <!-- S3: Judge -->
     <div id="s-judge" class="screen">
         <div class="game-logo">Worduel</div>
-        <div class="game-tagline">Global Multiplayer</div>
+        <div class="game-tagline">Global Arcade</div>
         <div class="gcard">
-            <div class="player-badge p1-badge">⚔ Player 1 — Judge the guess</div>
-            <div class="judge-title">The guess is</div>
-            <div class="judge-word" id="judge-word-display"></div>
-            <div class="state-legend">
-                <div class="sl green">✓ Right</div>
-                <div class="sl yellow">~ Wrong place</div>
-                <div class="sl gray">✗ Not in word</div>
+            <div class="player-badge p1-badge">⚔ Player 1 — Judge Guess</div>
+            <div style="font-size:14px;font-weight:800;color:#a78bfa;text-transform:uppercase;margin-bottom:8px">They
+                Guessed:
             </div>
-            <div class="judge-instruction">Tap each letter to cycle its result</div>
+            <div class="judge-word" id="judge-word-display"></div>
+            <div class="hint-box" style="margin-bottom:1.25rem">Tap tiles to change colors.<br>Green=Right,
+                Yellow=Moved,
+                Gray=Wrong.</div>
             <div class="judge-tiles" id="judge-tiles"></div>
             <div class="error" id="judge-error"></div>
             <div class="judge-btns">
-                <button class="jbtn win" onclick="judgeSubmit(true)">🎉 All correct!</button>
-                <button class="jbtn next" onclick="judgeSubmit(false)">Send feedback →</button>
+                <button class="jbtn win" onclick="judgeSubmit(true)">🎉 PERFECT!</button>
+                <button class="jbtn next" onclick="judgeSubmit(false)">SEND FEEDBACK →</button>
             </div>
             <button class="ghost-btn" style="margin-top:1.5rem;" onclick="playAgain()">⚠️ Abort & Restart Game</button>
         </div>
     </div>
 
+    <!-- S4: Reveal after loss -->
     <div id="s-reveal" class="screen">
         <div class="game-logo">Worduel</div>
-        <div class="game-tagline">Global Multiplayer</div>
+        <div class="game-tagline">Global Arcade</div>
         <div class="gcard">
-            <div class="player-badge p1-badge">⚔ Player 1 — Reveal your word</div>
-            <div style="font-size:16px;font-weight:600;text-align:center;margin-bottom:8px">All 8 attempts used!</div>
-            <div style="font-size:13px;color:#6b7280;text-align:center;margin-bottom:1rem">Type the secret word to
-                reveal it
+            <div class="player-badge p1-badge">⚔ Player 1 — Game Over</div>
+            <div style="font-size:20px;font-weight:800;text-align:center;margin-bottom:8px;color:#f87171">OUT OF
+                ATTEMPTS!
             </div>
-            <input type="text" id="reveal-input" class="reveal-input" placeholder="your word..." maxlength="20"
-                autocomplete="off" oninput="this.value=this.value.replace(/[^a-zA-Z]/g,'').toUpperCase()" />
+            <div class="hint-box">Type the secret word below to reveal it to everyone.</div>
+            <input type="text" id="reveal-input" class="guess-field" style="width:100%;margin:1rem 0;"
+                placeholder="SECRET WORD..." maxlength="20" autocomplete="off"
+                oninput="this.value=this.value.replace(/[^a-zA-Z]/g,'').toUpperCase()" />
             <div class="error" id="reveal-error"></div>
-            <button class="cta" onclick="revealEnd()">Reveal →</button>
+            <button class="cta" onclick="revealEnd()">REVEAL ANSWER →</button>
             <button class="ghost-btn" style="margin-top:1.5rem;" onclick="playAgain()">⚠️ Abort & Restart Game</button>
         </div>
     </div>
 
+    <!-- S5: Result -->
     <div id="s-result" class="screen">
         <div class="game-logo">Worduel</div>
         <div class="gcard" style="text-align:center">
             <div class="result-emoji" id="r-emoji"></div>
             <div class="result-title" id="r-title"></div>
-            <div style="font-size:13px;color:#6b7280;margin-top:4px">The word was</div>
+            <div style="font-size:14px;color:#a78bfa;font-weight:800;text-transform:uppercase;margin-top:1rem">The word
+                was
+            </div>
             <div class="result-word-reveal" id="r-word"></div>
             <div class="score-row">
                 <div class="score-box p2c">
@@ -914,7 +873,7 @@
                     <div class="l">P1 Wins</div>
                 </div>
             </div>
-            <button class="play-again" onclick="playAgain()">Start New Game Globally</button>
+            <button class="cta" onclick="playAgain()">PLAY NEXT ROUND</button>
             <button class="ghost-btn" onclick="resetGlobalScores()">Reset Global Scores</button>
         </div>
     </div>
@@ -931,10 +890,11 @@
 
         client.on('connect', () => {
             const badge = $('sync-status');
-            badge.style.background = '#14532d';
-            badge.style.borderColor = '#22c55e';
+            badge.style.background = '#166534';
+            badge.style.borderColor = '#14532d';
             badge.style.color = '#4ade80';
-            badge.innerHTML = '<div class="live-dot" style="background:#4ade80;"></div>LIVE SYNC';
+            badge.style.boxShadow = '0 4px 0 #064e3b';
+            badge.innerHTML = '<div class="live-dot" style="background:#4ade80;box-shadow:0 0 8px #4ade80;"></div>LIVE SYNC';
             client.subscribe(SYNC_TOPIC);
         });
 
@@ -969,11 +929,9 @@
         const KB = [['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'], ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'], ['Z', 'X', 'C', 'V', 'B', 'N', 'M']];
 
         function applyGlobalState(state) {
-            // Check if we need to completely wipe the board AND the scores
             if (!state || state.clear === true) {
                 wordLen = 0; attemptsLeft = 8; guessCount = 0; keyMap = {}; lastGuess = ''; guessesHistory = []; endData = null; judgeStates = [];
 
-                // --> SCORES RESET HANDLER <--
                 if (state && state.resetScores) {
                     wins = 0;
                     losses = 0;
@@ -1024,7 +982,7 @@
                     if (el) el.className = 'key ' + v;
                 });
 
-                if ($('att-text')) $('att-text').textContent = `${attemptsLeft} left`;
+                if ($('att-text')) $('att-text').textContent = `${attemptsLeft}`;
                 if ($('bar-fill')) $('bar-fill').style.width = `${(attemptsLeft / 8) * 100}%`;
 
                 if (state.screen === 's-judge' && lastGuess) {
@@ -1032,8 +990,8 @@
                         const tile = $(`t-${guessCount}-${i}`);
                         if (tile) {
                             tile.textContent = c;
-                            tile.style.borderColor = '#4b5563';
-                            tile.style.color = '#f0f0ff';
+                            tile.style.borderColor = '#4a2b7a';
+                            tile.style.color = '#fff';
                         }
                     });
 
@@ -1056,7 +1014,7 @@
 
             if (state.screen === 's-result' && endData) {
                 $('r-emoji').textContent = endData.won ? '🎉' : '💀';
-                $('r-title').textContent = endData.won ? `They cracked it in ${endData.n} guess${endData.n === 1 ? '' : 'es'}!` : 'Player 1 wins — too tough!';
+                $('r-title').textContent = endData.won ? `Cracked in ${endData.n} Guess${endData.n === 1 ? '' : 'es'}!` : 'Player 1 Wins!';
                 $('r-word').textContent = endData.word;
                 $('s-p2').textContent = wins;
                 $('s-p1').textContent = losses;
@@ -1089,11 +1047,11 @@
         }
 
         function confirmCount() {
-            if (!wordLen) { $('p1-error').textContent = 'Pick a letter count first!'; return; }
+            if (!wordLen) { $('p1-error').textContent = 'Select length first!'; return; }
             attemptsLeft = 8; guessCount = 0; keyMap = {}; lastGuess = ''; guessesHistory = []; endData = null; judgeStates = [];
             $('guess-input').value = ''; $('p2-error').textContent = '';
             $('guess-input').setAttribute('maxlength', wordLen);
-            $('att-text').textContent = '8 left';
+            $('att-text').textContent = '8';
             $('bar-fill').style.width = '100%';
             buildGrid(); buildKeyboard(); renderCurrentWord('');
 
@@ -1116,8 +1074,27 @@
             KB.forEach(row => {
                 const r = document.createElement('div'); r.className = 'kb-row';
                 row.forEach(k => {
-                    const d = document.createElement('div'); d.className = 'key'; d.textContent = k; d.id = 'key-' + k; r.appendChild(d);
+                    const d = document.createElement('div'); d.className = 'key'; d.textContent = k; d.id = 'key-' + k;
+                    // Add tap functionality to keys directly
+                    d.onclick = () => {
+                        if (currentScreen !== 's-guess') return;
+                        const inp = $('guess-input');
+                        if (inp.value.length < wordLen) {
+                            inp.value += k; syncGuess();
+                        }
+                    };
+                    r.appendChild(d);
                 });
+                // Add backspace and enter logic to bottom row
+                if (row[0] === 'Z') {
+                    const bs = document.createElement('div'); bs.className = 'key'; bs.innerHTML = '⌫'; bs.style.width = '50px';
+                    bs.onclick = () => { if (currentScreen !== 's-guess') return; const inp = $('guess-input'); inp.value = inp.value.slice(0, -1); syncGuess(); };
+                    r.insertBefore(bs, r.firstChild);
+
+                    const ent = document.createElement('div'); ent.className = 'key'; ent.innerHTML = '↵'; ent.style.width = '50px';
+                    ent.onclick = () => { if (currentScreen !== 's-guess') return; submitGuess(); };
+                    r.appendChild(ent);
+                }
                 kb.appendChild(r);
             });
         }
@@ -1140,7 +1117,7 @@
             const g = $('guess-input').value.toUpperCase();
             $('p2-error').textContent = '';
             if (g.length !== wordLen) {
-                $('p2-error').textContent = `Enter a ${wordLen}-letter word.`;
+                $('p2-error').textContent = `Need ${wordLen} letters!`;
                 $('p2-error').classList.remove('shake'); void $('p2-error').offsetWidth; $('p2-error').classList.add('shake');
                 return;
             }
@@ -1163,7 +1140,6 @@
 
             guessesHistory.push({ word: lastGuess, feedback: fb });
 
-            // Update keyboard map
             lastGuess.split('').forEach((c, i) => {
                 const cur = keyMap[c];
                 if (cur === 'green') return;
@@ -1187,21 +1163,34 @@
 
         function revealEnd() {
             const w = $('reveal-input').value.trim().toUpperCase();
-            if (w.length < 2) { $('reveal-error').textContent = 'Enter your word!'; return; }
+            if (w.length < 2) { $('reveal-error').textContent = 'Type the word first!'; return; }
             losses++;
             endData = { won: false, n: 0, word: w };
             broadcastState('s-result');
         }
 
-        // Just clears the board for the next round
         function playAgain() {
             client.publish(SYNC_TOPIC, JSON.stringify({ clear: true }), { retain: true });
         }
 
-        // Clears the board AND zeroes out the wins/losses
         function resetGlobalScores() {
             client.publish(SYNC_TOPIC, JSON.stringify({ clear: true, resetScores: true }), { retain: true });
         }
+
+        // Ensure backspace works globally if not typing in input directly
+        document.addEventListener('keydown', (e) => {
+            if (currentScreen === 's-guess' && document.activeElement !== $('guess-input')) {
+                if (e.key === 'Backspace') {
+                    $('guess-input').value = $('guess-input').value.slice(0, -1);
+                    syncGuess();
+                } else if (/^[a-zA-Z]$/.test(e.key) && $('guess-input').value.length < wordLen) {
+                    $('guess-input').value += e.key;
+                    syncGuess();
+                } else if (e.key === 'Enter') {
+                    submitGuess();
+                }
+            }
+        });
     </script>
 </body>
 

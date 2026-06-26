@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Worduel - Global Sync</title>
+    <title>Worduel - Asymmetric Arcade</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&display=swap');
 
@@ -21,6 +21,9 @@
             color: #f0f0ff;
             min-height: 100vh;
             overflow-x: hidden;
+            /* Add these two lines to stop the screen shake! */
+            overflow-y: scroll;
+            scrollbar-gutter: stable;
         }
 
         .screen {
@@ -48,6 +51,7 @@
             text-shadow: 0 6px 0 #4a148c;
             transform: rotate(-2deg);
             margin-bottom: 0.5rem;
+            text-align: center;
         }
 
         .game-tagline {
@@ -61,6 +65,7 @@
             padding: 6px 16px;
             border-radius: 20px;
             border: 2px solid #4a148c;
+            text-align: center;
         }
 
         /* 3D Game Card */
@@ -139,6 +144,40 @@
         .cta:active {
             transform: translateY(6px);
             box-shadow: 0 0 0 #14532d;
+        }
+
+        /* Role Selection Buttons */
+        .role-btn {
+            width: 100%;
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.1s;
+            font-family: 'Space Grotesk', sans-serif;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .role-p1 {
+            background: #7c3aed;
+            border: 3px solid #4c1d95;
+            color: #fff;
+            box-shadow: 0 6px 0 #4c1d95;
+        }
+
+        .role-p2 {
+            background: #2563eb;
+            border: 3px solid #1e3a8a;
+            color: #fff;
+            box-shadow: 0 6px 0 #1e3a8a;
+        }
+
+        .role-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 transparent;
         }
 
         /* Ghost Button (Abort/Reset) */
@@ -653,6 +692,32 @@
             color: #f87171;
         }
 
+        /* Waiting Spinner */
+        .wait-spinner {
+            width: 50px;
+            height: 50px;
+            border: 6px solid #4a2b7a;
+            border-top-color: #a78bfa;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .wait-msg {
+            font-size: 18px;
+            font-weight: 800;
+            color: #a78bfa;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
         /* Animations */
         @keyframes bounceIn {
             0% {
@@ -716,11 +781,18 @@
             }
         }
 
-        /* Live Badge */
-        .live-badge {
+        /* Live Badge & Role Badge */
+        .top-badges {
             position: fixed;
             top: 15px;
             right: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+            align-items: center;
+        }
+
+        .live-badge {
             background: #166534;
             color: #4ade80;
             padding: 6px 14px;
@@ -733,7 +805,6 @@
             align-items: center;
             gap: 8px;
             box-shadow: 0 4px 0 #064e3b;
-            z-index: 100;
         }
 
         .live-dot {
@@ -758,20 +829,62 @@
                 opacity: 1
             }
         }
+
+        .role-indicator {
+            background: #2a1452;
+            color: #a78bfa;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            border: 3px solid #4a148c;
+            box-shadow: 0 4px 0 #1e093d;
+            display: none;
+            cursor: pointer;
+        }
+
+        .role-indicator:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 transparent;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="live-badge" id="sync-status"
-        style="background:#92400e;color:#fbbf24;border-color:#78350f;box-shadow:0 4px 0 #451a03;">
-        <div class="live-dot" style="background:#fbbf24;box-shadow:0 0 8px #fbbf24;"></div>CONNECTING...
+    <div class="top-badges">
+        <div class="role-indicator" id="role-badge" onclick="clearRole()">Role</div>
+        <div class="live-badge" id="sync-status"
+            style="background:#92400e;color:#fbbf24;border-color:#78350f;box-shadow:0 4px 0 #451a03;">
+            <div class="live-dot" style="background:#fbbf24;box-shadow:0 0 8px #fbbf24;"></div>SYNCING...
+        </div>
     </div>
 
-    <!-- S1: Setup -->
-    <div id="s-setup" class="screen active">
+    <div id="s-lobby" class="screen active">
+        <div class="game-logo" style="font-size:48px;margin-bottom:2rem;">Worduel</div>
+        <div class="gcard">
+            <div style="font-size:16px;font-weight:800;color:#a78bfa;margin-bottom:1.5rem;text-transform:uppercase;">
+                Select
+                Your Controller</div>
+            <button class="role-btn role-p1" onclick="selectRole('p1')">⚔ I am Player 1<br><span
+                    style="font-size:12px;opacity:0.8">(The Mastermind)</span></button>
+            <button class="role-btn role-p2" onclick="selectRole('p2')">🔍 I am Player 2<br><span
+                    style="font-size:12px;opacity:0.8">(The Guesser)</span></button>
+        </div>
+    </div>
+
+    <div id="s-wait" class="screen">
         <div class="game-logo">Worduel</div>
-        <div class="game-tagline">Global Arcade</div>
+        <div class="gcard" style="padding:3rem 1.5rem;">
+            <div class="wait-spinner"></div>
+            <div class="wait-msg" id="wait-text">Waiting...</div>
+            <button class="ghost-btn" style="margin-top:2rem;" onclick="playAgain()">⚠️ Force Game Restart</button>
+        </div>
+    </div>
+
+    <div id="s-setup" class="screen">
+        <div class="game-logo">Worduel</div>
         <div class="gcard">
             <div class="player-badge p1-badge">⚔ Player 1 — Set the Target</div>
             <div class="hint-box">Think of a secret word.<br>Just pick <strong>how many letters</strong> it has.</div>
@@ -786,12 +899,10 @@
         </div>
     </div>
 
-    <!-- S2: Guess -->
     <div id="s-guess" class="screen">
         <div class="game-logo">Worduel</div>
-        <div class="game-tagline">Global Arcade</div>
         <div class="gcard">
-            <div class="player-badge p2-badge">🔍 Everyone — Break the Code</div>
+            <div class="player-badge p2-badge">🔍 Player 2 — Break the Code</div>
             <div class="guess-grid" id="guess-grid"></div>
             <div class="current-word" id="current-word"></div>
             <div class="attempts-bar">
@@ -807,14 +918,12 @@
             </div>
             <div class="error" id="p2-error"></div>
             <div class="keyboard" id="keyboard"></div>
-            <button class="ghost-btn" style="margin-top:1.5rem;" onclick="playAgain()">⚠️ Abort & Restart Game</button>
+            <button class="ghost-btn" style="margin-top:1.5rem;" onclick="playAgain()">⚠️ Abort Game</button>
         </div>
     </div>
 
-    <!-- S3: Judge -->
     <div id="s-judge" class="screen">
         <div class="game-logo">Worduel</div>
-        <div class="game-tagline">Global Arcade</div>
         <div class="gcard">
             <div class="player-badge p1-badge">⚔ Player 1 — Judge Guess</div>
             <div style="font-size:14px;font-weight:800;color:#a78bfa;text-transform:uppercase;margin-bottom:8px">They
@@ -830,30 +939,27 @@
                 <button class="jbtn win" onclick="judgeSubmit(true)">🎉 PERFECT!</button>
                 <button class="jbtn next" onclick="judgeSubmit(false)">SEND FEEDBACK →</button>
             </div>
-            <button class="ghost-btn" style="margin-top:1.5rem;" onclick="playAgain()">⚠️ Abort & Restart Game</button>
+            <button class="ghost-btn" style="margin-top:1.5rem;" onclick="playAgain()">⚠️ Abort Game</button>
         </div>
     </div>
 
-    <!-- S4: Reveal after loss -->
     <div id="s-reveal" class="screen">
         <div class="game-logo">Worduel</div>
-        <div class="game-tagline">Global Arcade</div>
         <div class="gcard">
             <div class="player-badge p1-badge">⚔ Player 1 — Game Over</div>
             <div style="font-size:20px;font-weight:800;text-align:center;margin-bottom:8px;color:#f87171">OUT OF
                 ATTEMPTS!
             </div>
-            <div class="hint-box">Type the secret word below to reveal it to everyone.</div>
+            <div class="hint-box">Type the secret word below to reveal it to Player 2.</div>
             <input type="text" id="reveal-input" class="guess-field" style="width:100%;margin:1rem 0;"
                 placeholder="SECRET WORD..." maxlength="20" autocomplete="off"
                 oninput="this.value=this.value.replace(/[^a-zA-Z]/g,'').toUpperCase()" />
             <div class="error" id="reveal-error"></div>
             <button class="cta" onclick="revealEnd()">REVEAL ANSWER →</button>
-            <button class="ghost-btn" style="margin-top:1.5rem;" onclick="playAgain()">⚠️ Abort & Restart Game</button>
+            <button class="ghost-btn" style="margin-top:1.5rem;" onclick="playAgain()">⚠️ Abort Game</button>
         </div>
     </div>
 
-    <!-- S5: Result -->
     <div id="s-result" class="screen">
         <div class="game-logo">Worduel</div>
         <div class="gcard" style="text-align:center">
@@ -866,7 +972,7 @@
             <div class="score-row">
                 <div class="score-box p2c">
                     <div class="n" id="s-p2">0</div>
-                    <div class="l">Guesser Wins</div>
+                    <div class="l">P2 Wins</div>
                 </div>
                 <div class="score-box p1c">
                     <div class="n" id="s-p1">0</div>
@@ -883,10 +989,35 @@
     <script>
         const $ = id => document.getElementById(id);
 
+        // --- LOCAL ROLE MEMORY ---
+        let myRole = localStorage.getItem('worduel_role') || null;
+
+        function selectRole(role) {
+            myRole = role;
+            localStorage.setItem('worduel_role', role);
+            updateRoleBadge();
+            routeScreen(globalPhase);
+        }
+
+        function clearRole() {
+            myRole = null;
+            localStorage.removeItem('worduel_role');
+            $('role-badge').style.display = 'none';
+            show('s-lobby');
+        }
+
+        function updateRoleBadge() {
+            if (myRole) {
+                const b = $('role-badge');
+                b.style.display = 'block';
+                b.textContent = myRole === 'p1' ? '⚔ P1 (Change)' : '🔍 P2 (Change)';
+            }
+        }
+
         // --- GLOBAL SYNC SETUP ---
+        // I CHANGED THIS TOPIC! This acts as a fresh wipe so old code ghosts don't freeze your app.
         const client = mqtt.connect('wss://test.mosquitto.org:8081');
-        const SYNC_TOPIC = 'worduel-global-party-channel-992211';
-        let isSyncing = true;
+        const SYNC_TOPIC = 'worduel-asymmetric-v1-clean-slate';
 
         client.on('connect', () => {
             const badge = $('sync-status');
@@ -907,11 +1038,11 @@
             }
         });
 
-        function broadcastState(targetScreen) {
-            currentScreen = targetScreen;
+        function broadcastState(phase) {
+            globalPhase = phase;
             const state = {
                 wordLen, attemptsLeft, guessCount, keyMap, lastGuess, judgeStates,
-                guessesHistory, screen: targetScreen, wins, losses, endData
+                guessesHistory, phase: phase, wins, losses, endData
             };
             client.publish(SYNC_TOPIC, JSON.stringify(state), { retain: true });
         }
@@ -922,30 +1053,70 @@
         let guessesHistory = [];
         let wins = 0;
         let losses = 0;
-        let currentScreen = 's-setup';
+        let globalPhase = 'setup';
         let endData = null;
 
         const STATES = ['', 'green', 'yellow', 'gray'];
         const KB = [['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'], ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'], ['Z', 'X', 'C', 'V', 'B', 'N', 'M']];
 
+        // --- ASYMMETRIC ROUTING LOGIC ---
+        function show(id) {
+            document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none' });
+            const el = $(id); if (el) { el.style.display = 'flex'; el.classList.add('active'); }
+        }
+
+        function showWait(msg) {
+            $('wait-text').textContent = msg;
+            show('s-wait');
+        }
+
+        function routeScreen(phase) {
+            if (!myRole) {
+                show('s-lobby');
+                return;
+            }
+
+            if (phase === 'setup') {
+                if (myRole === 'p1') show('s-setup');
+                else showWait("Waiting for Player 1 to set the target...");
+            }
+            else if (phase === 'guessing') {
+                if (myRole === 'p2') show('s-guess');
+                else showWait("Waiting for Player 2 to crack the code...");
+            }
+            else if (phase === 'judging') {
+                if (myRole === 'p1') show('s-judge');
+                else showWait("Waiting for Player 1 to check your guess...");
+            }
+            else if (phase === 'revealing') {
+                if (myRole === 'p1') show('s-reveal');
+                else showWait("Out of attempts! Waiting for Player 1 to reveal the word...");
+            }
+            else if (phase === 'result') {
+                show('s-result');
+            }
+        }
+
+        // -------------------------
+
         function applyGlobalState(state) {
             if (!state || state.clear === true) {
                 wordLen = 0; attemptsLeft = 8; guessCount = 0; keyMap = {}; lastGuess = ''; guessesHistory = []; endData = null; judgeStates = [];
+                globalPhase = 'setup';
 
                 if (state && state.resetScores) {
-                    wins = 0;
-                    losses = 0;
+                    wins = 0; losses = 0;
                     if ($('s-p2')) $('s-p2').textContent = 0;
                     if ($('s-p1')) $('s-p1').textContent = 0;
                 }
 
                 document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('selected'));
                 $('preview-dashes').innerHTML = ''; $('p1-error').textContent = '';
-                show('s-setup');
+
+                updateRoleBadge();
+                routeScreen(globalPhase);
                 return;
             }
-
-            isSyncing = true;
 
             wordLen = state.wordLen;
             attemptsLeft = state.attemptsLeft;
@@ -957,6 +1128,9 @@
             wins = state.wins || 0;
             losses = state.losses || 0;
             endData = state.endData;
+
+            // This is the safety net! If phase is missing, it defaults to 'setup' so it never gets stuck
+            globalPhase = state.phase || 'setup';
 
             if (wordLen > 0) {
                 document.querySelectorAll('.count-btn').forEach(b => b.classList.toggle('selected', +b.dataset.n === wordLen));
@@ -970,10 +1144,7 @@
                 guessesHistory.forEach((g, idx) => {
                     g.word.split('').forEach((c, i) => {
                         const tile = $(`t-${idx}-${i}`);
-                        if (tile) {
-                            tile.textContent = c;
-                            tile.className = 'tile ' + g.feedback[i];
-                        }
+                        if (tile) { tile.textContent = c; tile.className = 'tile ' + g.feedback[i]; }
                     });
                 });
 
@@ -985,14 +1156,10 @@
                 if ($('att-text')) $('att-text').textContent = `${attemptsLeft}`;
                 if ($('bar-fill')) $('bar-fill').style.width = `${(attemptsLeft / 8) * 100}%`;
 
-                if (state.screen === 's-judge' && lastGuess) {
+                if (globalPhase === 'judging' && lastGuess) {
                     lastGuess.split('').forEach((c, i) => {
                         const tile = $(`t-${guessCount}-${i}`);
-                        if (tile) {
-                            tile.textContent = c;
-                            tile.style.borderColor = '#4a2b7a';
-                            tile.style.color = '#fff';
-                        }
+                        if (tile) { tile.textContent = c; tile.style.borderColor = '#4a2b7a'; tile.style.color = '#fff'; }
                     });
 
                     const c = $('judge-tiles');
@@ -1004,15 +1171,14 @@
                         const t = document.createElement('div');
                         t.className = 'judge-tile ' + s;
                         t.innerHTML = `<span class="ltr">${ch}</span><span class="ind">${icons[s] || '✓'}</span>`;
-                        t.onclick = () => cycleState(i, ch, t);
+                        if (myRole === 'p1') t.onclick = () => cycleState(i, ch, t);
                         c.appendChild(t);
                     });
-
                     $('judge-word-display').textContent = lastGuess;
                 }
             }
 
-            if (state.screen === 's-result' && endData) {
+            if (globalPhase === 'result' && endData) {
                 $('r-emoji').textContent = endData.won ? '🎉' : '💀';
                 $('r-title').textContent = endData.won ? `Cracked in ${endData.n} Guess${endData.n === 1 ? '' : 'es'}!` : 'Player 1 Wins!';
                 $('r-word').textContent = endData.word;
@@ -1020,13 +1186,8 @@
                 $('s-p1').textContent = losses;
             }
 
-            show(state.screen);
-            isSyncing = false;
-        }
-
-        function show(id) {
-            document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none' });
-            const el = $(id); if (el) { el.style.display = 'flex'; el.classList.add('active'); }
+            updateRoleBadge();
+            routeScreen(globalPhase);
         }
 
         (() => {
@@ -1034,8 +1195,10 @@
             for (let i = 3; i <= 10; i++) {
                 const b = document.createElement('button');
                 b.className = 'count-btn'; b.textContent = i; b.dataset.n = i;
-                b.onclick = () => selectCount(i); g.appendChild(b);
+                if (myRole !== 'p2') b.onclick = () => selectCount(i);
+                g.appendChild(b);
             }
+            updateRoleBadge();
         })();
 
         function selectCount(n) {
@@ -1043,7 +1206,7 @@
             document.querySelectorAll('.count-btn').forEach(b => b.classList.toggle('selected', +b.dataset.n === n));
             $('preview-dashes').innerHTML = Array(n).fill(`<div class="preview-dash">_</div>`).join('');
             $('p1-error').textContent = '';
-            broadcastState('s-setup');
+            broadcastState('setup');
         }
 
         function confirmCount() {
@@ -1055,7 +1218,7 @@
             $('bar-fill').style.width = '100%';
             buildGrid(); buildKeyboard(); renderCurrentWord('');
 
-            broadcastState('s-guess');
+            broadcastState('guessing');
         }
 
         function buildGrid() {
@@ -1075,24 +1238,22 @@
                 const r = document.createElement('div'); r.className = 'kb-row';
                 row.forEach(k => {
                     const d = document.createElement('div'); d.className = 'key'; d.textContent = k; d.id = 'key-' + k;
-                    // Add tap functionality to keys directly
-                    d.onclick = () => {
-                        if (currentScreen !== 's-guess') return;
-                        const inp = $('guess-input');
-                        if (inp.value.length < wordLen) {
-                            inp.value += k; syncGuess();
-                        }
-                    };
+                    if (myRole === 'p2') {
+                        d.onclick = () => {
+                            if (globalPhase !== 'guessing') return;
+                            const inp = $('guess-input');
+                            if (inp.value.length < wordLen) { inp.value += k; syncGuess(); }
+                        };
+                    }
                     r.appendChild(d);
                 });
-                // Add backspace and enter logic to bottom row
-                if (row[0] === 'Z') {
+                if (row[0] === 'Z' && myRole === 'p2') {
                     const bs = document.createElement('div'); bs.className = 'key'; bs.innerHTML = '⌫'; bs.style.width = '50px';
-                    bs.onclick = () => { if (currentScreen !== 's-guess') return; const inp = $('guess-input'); inp.value = inp.value.slice(0, -1); syncGuess(); };
+                    bs.onclick = () => { if (globalPhase !== 'guessing') return; const inp = $('guess-input'); inp.value = inp.value.slice(0, -1); syncGuess(); };
                     r.insertBefore(bs, r.firstChild);
 
                     const ent = document.createElement('div'); ent.className = 'key'; ent.innerHTML = '↵'; ent.style.width = '50px';
-                    ent.onclick = () => { if (currentScreen !== 's-guess') return; submitGuess(); };
+                    ent.onclick = () => { if (globalPhase !== 'guessing') return; submitGuess(); };
                     r.appendChild(ent);
                 }
                 kb.appendChild(r);
@@ -1109,11 +1270,13 @@
         }
 
         function syncGuess() {
+            if (myRole !== 'p2') return;
             let v = $('guess-input').value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, wordLen);
             $('guess-input').value = v; renderCurrentWord(v);
         }
 
         function submitGuess() {
+            if (myRole !== 'p2') return;
             const g = $('guess-input').value.toUpperCase();
             $('p2-error').textContent = '';
             if (g.length !== wordLen) {
@@ -1125,15 +1288,17 @@
             judgeStates = Array(wordLen).fill(1);
             $('guess-input').value = ''; renderCurrentWord('');
 
-            broadcastState('s-judge');
+            broadcastState('judging');
         }
 
         function cycleState(i, ch, el) {
+            if (myRole !== 'p1') return;
             judgeStates[i] = (judgeStates[i] % 3) + 1;
-            broadcastState('s-judge');
+            broadcastState('judging');
         }
 
         function judgeSubmit(won) {
+            if (myRole !== 'p1') return;
             $('judge-error').textContent = '';
             if (!won && judgeStates.some(s => s === 0)) { $('judge-error').textContent = 'Set all letters first.'; return; }
             const fb = won ? Array(wordLen).fill('green') : judgeStates.map(s => STATES[s]);
@@ -1153,20 +1318,21 @@
             if (won || fb.every(f => f === 'green')) {
                 wins++;
                 endData = { won: true, n: guessCount, word: '?' };
-                broadcastState('s-result');
+                broadcastState('result');
             } else if (attemptsLeft === 0) {
-                broadcastState('s-reveal');
+                broadcastState('revealing');
             } else {
-                broadcastState('s-guess');
+                broadcastState('guessing');
             }
         }
 
         function revealEnd() {
+            if (myRole !== 'p1') return;
             const w = $('reveal-input').value.trim().toUpperCase();
             if (w.length < 2) { $('reveal-error').textContent = 'Type the word first!'; return; }
             losses++;
             endData = { won: false, n: 0, word: w };
-            broadcastState('s-result');
+            broadcastState('result');
         }
 
         function playAgain() {
@@ -1177,9 +1343,8 @@
             client.publish(SYNC_TOPIC, JSON.stringify({ clear: true, resetScores: true }), { retain: true });
         }
 
-        // Ensure backspace works globally if not typing in input directly
         document.addEventListener('keydown', (e) => {
-            if (currentScreen === 's-guess' && document.activeElement !== $('guess-input')) {
+            if (myRole === 'p2' && globalPhase === 'guessing' && document.activeElement !== $('guess-input')) {
                 if (e.key === 'Backspace') {
                     $('guess-input').value = $('guess-input').value.slice(0, -1);
                     syncGuess();
@@ -1191,6 +1356,9 @@
                 }
             }
         });
+
+        // Boot check
+        if (myRole) routeScreen(globalPhase);
     </script>
 </body>
 
